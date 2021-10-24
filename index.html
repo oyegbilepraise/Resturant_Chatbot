@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Bot</title>
+    <link rel="stylesheet" href="<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"/>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="main">
+        <h2>Chat Bot...</h2>
+        <div id="msg_area">
+            <div id="robot">
+                <div id="bot"></div>
+                <h3>K Resturant Chatbot</h3>
+            </div>
+        </div>
+        <div id="input">
+            <input type="text" placeholder="new msg..." id="text">
+            <button id="send">Send <i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+  const start = async() => {
+        let res_msg = document.createElement('div')
+        await fetch('http://localhost:3300/welcome').then(response => response.text()).then(data => res_msg.innerHTML = data)
+        res_msg.setAttribute('class', 'left')
+
+        document.getElementById('msg_area').appendChild(res_msg);
+    }
+    start()
+
+
+    document.getElementById('send').addEventListener("click", async (e) => {
+        e.preventDefault();
+        var req = document.getElementById('text').value;
+        if(req == undefined || req == ''){
+
+        }else{
+            let res = '';
+            await fetch('http://localhost:3300/chat', {
+              method: 'POST',
+              headers: {
+                  'Content-Type' : 'application/json'
+              },
+              body: JSON.stringify({req})
+            }).then(response => response.text()).then(data => res = JSON.parse(data))
+            let msg_req = document.createElement('div')
+            let msg_res = document.createElement('div')
+
+            let Con1 = document.createElement('div')
+            let Con2 = document.createElement('div')
+
+            Con1.setAttribute('class', 'msgCon1')
+            Con2.setAttribute('class', 'msgCon2')
+
+            msg_req.innerHTML = req
+            for (let index = 0; index < res.length; index++) {
+                // const element = array[index];
+                msg_res.innerHTML += res[index]
+                
+            }
+            msg_res.innerHTML = res;
+
+            msg_req.setAttribute('class', 'right')
+            msg_res.setAttribute('class', 'left')
+
+            let message = document.getElementById('msg_area')
+
+            message.appendChild(Con1)
+            message.appendChild(Con2)
+
+            Con1.appendChild(msg_req)
+            Con2.appendChild(msg_res)
+
+            document.getElementById('text').value = ''
+        }
+    }) 
+
+    var scrollMsg = document.getElementById('msg_area')
+    const scroll = (node) => {
+        node.scrollTop = node.scrollHeight;
+    }
+    scroll(scrollMsg)
+</script>
+</script>
+</html>
